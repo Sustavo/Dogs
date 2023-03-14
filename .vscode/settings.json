@@ -6,6 +6,7 @@
       ".gitignore": false,
       "package.json": false,
       "package-lock.json": false,
+      ".editorconfig": true,
       "public": true
     }
   }
