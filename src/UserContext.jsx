@@ -7,6 +7,8 @@ export const UserContext = createContext();
 export function UserStorage({ children }) {
   const [data, setData] = useState(null);
   const [login, setLogin] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   const getUser = async (token) => {
@@ -17,7 +19,24 @@ export function UserStorage({ children }) {
     setLogin(true);
   };
 
-
+  const userLogin = async (username, password) => {
+    try {
+      setError(null);
+      setLoading(true);
+      const { url, options } = TOKEN_POST({ username, password });
+      const tokenRes = await fetch(url, options);
+      if (!tokenRes.ok) throw new Error(`Error: ${tokenRes.statusText}`);
+      const { token } = await tokenRes.json();
+      window.localStorage.setItem("token", token);
+      await getUser(token);
+      navigate("/conta");
+    } catch (error) {
+      setError(error.message);
+      setLogin(false);
+    } finally {
+      setLoading(false);
+    }
+  };
 
 
 
@@ -25,7 +44,7 @@ export function UserStorage({ children }) {
 
   return (
     <UserContext.Provider
-      value={{ data, login }}
+      value={{ userLogin, data, error, loading, login }}
     >
       {children}
     </UserContext.Provider>
