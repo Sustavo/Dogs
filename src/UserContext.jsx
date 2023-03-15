@@ -38,13 +38,21 @@ export function UserStorage({ children }) {
     }
   };
 
+  const userLogout = useCallback(async () => {
+    setData(null);
+    setError(null);
+    setLoading(false);
+    setLogin(false);
+    window.localStorage.removeItem("token");
+    navigate("/login");
+  },[navigate]);
 
 
 
 
   return (
     <UserContext.Provider
-      value={{ userLogin, data, error, loading, login }}
+      value={{ userLogin, userLogout, data, error, loading, login }}
     >
       {children}
     </UserContext.Provider>
